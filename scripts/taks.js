@@ -7,7 +7,8 @@
 window.addEventListener('load', function () {
 
   /* ---------------- variables globales y llamado a funciones ---------------- */
-  
+const btnCerrarSesion = document.getElementById("closeApp")
+const formCrearTarea = document.getElementById("nueva-tarea")
 
 
   /* -------------------------------------------------------------------------- */
@@ -15,9 +16,13 @@ window.addEventListener('load', function () {
   /* -------------------------------------------------------------------------- */
 
   btnCerrarSesion.addEventListener('click', function () {
-   
-
-
+  
+  //console.log("click!");
+  
+  //borra el almacnamiento local y lo devuelve a la pagina inicial
+    localStorage.clear();
+    location.replace("./index.html")
+  
 
   });
 
