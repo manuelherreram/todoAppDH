@@ -6,8 +6,7 @@ window.addEventListener('load', function () {
     const email=document.getElementById("inputEmail")
     const password= document.getElementById("inputPassword")
     const url="https://todo-api.ctd.academy/v1"
-    const btn=document.querySelector("button")
-    const passwordrep=document.getElementById("inputPasswordRepetida")
+   
 
     /* -------------------------------------------------------------------------- */
     /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
@@ -48,12 +47,15 @@ window.addEventListener('load', function () {
                 console.log(response);
 
                 // manejar el error de la request.
-                return response.json()
+                if(response.ok){
+                return response.json()}
 
             })
             .then(data => {
                 console.log("Its works");
                 console.log(data);
+                console.log(data);//si tiene lapropiedad data.jwt
+
 
                 if (data.jwt) {
                     // Guardamos el dato jwt en el local storage (este token de autenticación)
