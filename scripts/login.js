@@ -1,94 +1,83 @@
-window.addEventListener('load', function () {
-    /* ---------------------- obtenemos variables globales ---------------------- */
-    const form = document.forms[0]
-    const email = document.querySelector("#inputEmail")
-    const password = document.getElementById("inputPassword")
-    const url = "https://todo-api.ctd.academy/v1"
-    // console.log(form);
-
+// Utilizamos 'DOMContentLoaded' en lugar de 'load' para que el código se ejecute cuando el DOM esté listo.
+document.addEventListener('DOMContentLoaded', () => {
+    /* ---------------------- Obtenemos elementos DOM ---------------------- */
+    const form = document.querySelector('form');
+    const email = document.querySelector('#inputEmail');
+    const password = document.querySelector('#inputPassword');
+    const url = 'https://todo-api.ctd.academy/v1';
+  
     /* -------------------------------------------------------------------------- */
-    /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
+    /*            FUNCIÓN 1: Escuchamos el evento submit y preparamos el envío     */
     /* -------------------------------------------------------------------------- */
-    form.addEventListener('submit', function (event) {
-        event.preventDefault()
-
-        //Creamos el cuerpo de la request (petición al servidor)
-        const payload = {
-            email: email.value,
-            password: password.value
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+  
+      // Creamos el cuerpo de la solicitud (petición al servidor)
+      const payload = {
+        email: email.value,
+        password: password.value,
+      };
+  
+      // Mostramos el objeto que recibimos del formulario en la consola
+      console.log(payload);
+  
+      // Configuramos la solicitud Fetch
+      const settings = {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+  
+      try {
+        // Realizamos la consulta de inicio de sesión a la API y esperamos la respuesta.
+        const data = await realizarLogin(settings);
+        console.log('Promesa cumplida💍');
+        console.log(data);
+  
+        if (data.jwt) {
+          // Guardamos el token JWT en el almacenamiento local (este token de autenticación)
+          localStorage.setItem('jwt', JSON.stringify(data.jwt));
+  
+          // Redireccionamos a nuestro panel de tareas
+          // window.location.replace('./mis-tareas.html');
         }
-        // vemos el objeto que recibimos del formulario
-        console.log(payload);
-
-        //configuramos la request del Fetch
-        const settings = {
-            method: "POST",
-            body: JSON.stringify(payload),
-            headers: {
-                'Content-Type': 'application/json'
-            }
+      } catch (error) {
+        console.warn('Promesa rechazada');
+        console.error(error);
+  
+        if (error.status === 400) {
+          console.warn('Contraseña incorrecta');
+          alert('Contraseña incorrecta');
+        } else if (error.status === 404) {
+          console.warn('El usuario no existe');
+          alert('El usuario no existe');
+        } else {
+          console.error('Error del servidor | URL no existe');
+          alert('Error del servidor | URL no existe');
         }
-
-        // Lanzamos la consulta del login a la API
-        realizarLogin(settings)
-
-        // Limpiamos el formulario
-        form.reset()
-
+      }
+  
+      // Limpiamos el formulario
+      form.reset();
     });
-
-
+  
     /* -------------------------------------------------------------------------- */
-    /*                     FUNCIÓN 2: Realizar el login [POST]                    */
+    /*                FUNCIÓN 2: Realizar el inicio de sesión [POST]              */
     /* -------------------------------------------------------------------------- */
-    function realizarLogin(settings) {
-        // console.log(settings);
-        console.log("Lanzar la consulta a la API...");
-
-
-        fetch(`${url}/users/login`, settings)
-            .then(response => {
-                console.log(response);
-
-                // manejar el error de la request.
-                //  if (response.ok) 
-                return response.json()
-
-                // si llego acá es por que la request no es la correcta y fuerzo el rechazo de la promesa del fetch
-                // return Promise.reject(response)
-
-            })
-            .then(data => {
-                console.log("Promesa cumplida💍");
-                console.log(data);
-
-                if (data.jwt) {
-                    // Guardamos el dato jwt en el local storage (este token de autenticación)
-                    localStorage.setItem("jwt", JSON.stringify(data.jwt))
-
-                    // redireccionamos a nuestro dashboard de todo
-                    // location.replace("./mis-tareas.html")
-                }
-
-            })
-            .catch(err => {
-                console.warn("Promesa rechazada ");
-                console.log(err);
-                if (err.status == 400) {
-                    console.warn("Contraseña incorrecta")
-                    alert("Contraseña incorrecta")
-                } else if (err.status == 404) {
-                    console.warn("El usuario no existe")
-                    alert("El usuario no existe")
-                } else {
-                    console.error("Error del servidor | url no existe")
-                    alert("Error del servidor | url no existe")
-                }
-            })
-
-
-
-    };
-
-
-});
+    async function realizarLogin(settings) {
+      console.log('Lanzando la consulta a la API...');
+      const response = await fetch(`${url}/users/login`, settings);
+  
+      if (!response.ok) {
+        throw {
+          status: response.status,
+          message: 'Error en la solicitud de inicio de sesión',
+        };
+      }
+  
+      return response.json();
+    }
+  });
+  
