@@ -6,6 +6,13 @@ window.addEventListener('load', function () {
     const url = "https://todo-api.ctd.academy/v1"
     // console.log(form);
 
+    email.addEventListener("blur",(ev)=>{
+        console.log(ev.target);
+        const field= ev.target
+        const fieldValue= field.value
+        
+    })
+    
     /* -------------------------------------------------------------------------- */
     /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
     /* -------------------------------------------------------------------------- */
@@ -67,7 +74,7 @@ window.addEventListener('load', function () {
                     localStorage.setItem("jwt", JSON.stringify(data.jwt))
 
                     // redireccionamos a nuestro dashboard de todo
-                    // location.replace("./mis-tareas.html")
+                    location.replace("./mis-tareas.html")
                 }
 
             })

@@ -53,13 +53,12 @@ window.addEventListener('load', function () {
             })
             .then(data => {
                 console.log("Its works");
-                console.log(data);
                 console.log(data);//si tiene lapropiedad data.jwt
 
 
                 if (data.jwt) {
                     // Guardamos el dato jwt en el local storage (este token de autenticación)
-                    localStorage.setItem("jwt", JSON.stringify(data.jwt))
+                    localStorage.setItem('jwt', JSON.stringify(data.jwt));
 
                     // redireccionamos a nuestro dashboard de todo
                     location.replace("./mis-tareas.html")
